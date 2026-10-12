@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deadlock Management - Group 3</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- Navigation -->
+<div class="nav-controls">
+  <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">&#8592;</button>
+  <span class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">10</span></span>
+  <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">&#8594;</button>
+</div>
+
+<!-- Slide Dots -->
+<div class="slide-dots" id="slideDots"></div>
+
+<!-- SLIDES CONTAINER -->
+<div class="slides-wrapper" id="slidesWrapper">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide active" id="slide-1">
+    <div class="slide-bg bg-title"></div>
+    <div class="slide-content title-slide">
+      <div class="title-badge animate-in delay-1">BACSE106 · Operating Systems · 2025–26</div>
+      <h1 class="main-title animate-in delay-2">DEADLOCK<br><span class="highlight">MANAGEMENT</span></h1>
+      <p class="subtitle animate-in delay-3">Analyzing & Resolving Physical Traffic Gridlocks<br>at Urban Intersections</p>
+      <div class="divider animate-in delay-4"></div>
+      <div class="team-grid animate-in delay-5">
+        <div class="member-card">
+          <div class="member-icon">👩‍💻</div>
+          <div class="member-name">Ramya C M</div>
+          <div class="member-id">25BLC1238</div>
+        </div>
+        <div class="member-card">
+          <div class="member-icon">👩‍💻</div>
+          <div class="member-name">Vedashrre Selvan</div>
+          <div class="member-id">25BLC1337</div>
+        </div>
+        <div class="member-card">
+          <div class="member-icon">👨‍💻</div>
+          <div class="member-name">M Praveen</div>
+          <div class="member-id">25BLC1372</div>
+        </div>
+      </div>
+      <div class="institute animate-in delay-6">VIT Chennai · Group 3</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: Problem Definition -->
+  <div class="slide" id="slide-2">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">02</span>
+        <h2>Problem <span class="highlight">Definition</span></h2>
+      </div>
+      <div class="two-col">
+        <div class="col-left animate-in delay-2">
+          <h3>What is a Traffic Gridlock?</h3>
+          <p>A traffic gridlock occurs when vehicles in a road network are so congested that no vehicle can move — each is blocked by another, creating a <strong>complete standstill</strong>.</p>
+          <div class="problem-points">
+            <div class="point-item animate-in delay-3">
+              <span class="point-icon">🚗</span>
+              <span>Vehicles occupy road space and refuse to yield</span>
+            </div>
+            <div class="point-item animate-in delay-4">
+              <span class="point-icon">🔄</span>
+              <span>Circular dependency forms — no one can move first</span>
+            </div>
+            <div class="point-item animate-in delay-5">
+              <span class="point-icon">⏱️</span>
+              <span>System halts indefinitely without intervention</span>
+            </div>
+            <div class="point-item animate-in delay-6">
+              <span class="point-icon">🏙️</span>
+              <span>Common in dense urban intersections during peak hours</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-right animate-in delay-3">
+          <div class="os-mapping-box">
+            <div class="mapping-title">OS ↔ Traffic Mapping</div>
+            <div class="mapping-row">
+              <span class="os-term">Process</span>
+              <span class="arrow-map">↔</span>
+              <span class="traffic-term">Vehicle</span>
+            </div>
+            <div class="mapping-row">
+              <span class="os-term">Resource</span>
+              <span class="arrow-map">↔</span>
+              <span class="traffic-term">Road Space</span>
+            </div>
+            <div class="mapping-row">
+              <span class="os-term">Deadlock</span>
+              <span class="arrow-map">↔</span>
+              <span class="traffic-term">Gridlock</span>
+            </div>
+            <div class="mapping-row">
+              <span class="os-term">Wait State</span>
+              <span class="arrow-map">↔</span>
+              <span class="traffic-term">Blocked Lane</span>
+            </div>
+            <div class="mapping-row">
+              <span class="os-term">Preemption</span>
+              <span class="arrow-map">↔</span>
+              <span class="traffic-term">Traffic Police</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Real-World Analogy -->
+  <div class="slide" id="slide-3">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">03</span>
+        <h2>Real-World <span class="highlight">Analogy</span></h2>
+      </div>
+      <p class="slide-desc animate-in delay-2">Four cars arrive simultaneously at a narrow four-way intersection — each waits for the other to move first.</p>
+      <div class="intersection-container animate-in delay-3">
+        <canvas id="intersectionCanvas" width="420" height="420"></canvas>
+      </div>
+      <div class="analogy-labels animate-in delay-4">
+        <div class="label-item">🚗 Car A holds <strong>North lane</strong>, needs East</div>
+        <div class="label-item">🚙 Car B holds <strong>East lane</strong>, needs South</div>
+        <div class="label-item">🚕 Car C holds <strong>South lane</strong>, needs West</div>
+        <div class="label-item">🚌 Car D holds <strong>West lane</strong>, needs North</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: 4 Conditions -->
+  <div class="slide" id="slide-4">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">04</span>
+        <h2>The 4 Conditions of <span class="highlight">Gridlock</span></h2>
+      </div>
+      <p class="slide-desc animate-in delay-2">Coffman's four necessary conditions — mapped to traffic scenarios</p>
+      <div class="conditions-grid">
+        <div class="condition-card animate-in delay-2">
+          <div class="cond-number">01</div>
+          <div class="cond-icon">🚫</div>
+          <div class="cond-title">Mutual Exclusion</div>
+          <div class="cond-os">Only one car per road space at a time</div>
+          <div class="cond-traffic">A lane cannot be shared — one vehicle occupies it exclusively</div>
+        </div>
+        <div class="condition-card animate-in delay-3">
+          <div class="cond-number">02</div>
+          <div class="cond-icon">✋</div>
+          <div class="cond-title">Hold & Wait</div>
+          <div class="cond-os">Car holds its lane while waiting for another</div>
+          <div class="cond-traffic">Vehicle refuses to reverse while blocking the intersection</div>
+        </div>
+        <div class="condition-card animate-in delay-4">
+          <div class="cond-number">03</div>
+          <div class="cond-icon">🔒</div>
+          <div class="cond-title">No Preemption</div>
+          <div class="cond-os">No external force removes a car from its lane</div>
+          <div class="cond-traffic">Without traffic police, no vehicle is forcibly moved</div>
+        </div>
+        <div class="condition-card animate-in delay-5">
+          <div class="cond-number">04</div>
+          <div class="cond-icon">🔁</div>
+          <div class="cond-title">Circular Wait</div>
+          <div class="cond-os">A→B→C→D→A waiting chain forms</div>
+          <div class="cond-traffic">Each car waits for the next in a closed loop</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Prevention Rules -->
+  <div class="slide" id="slide-5">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">05</span>
+        <h2>Traffic <span class="highlight">Prevention Rules</span></h2>
+      </div>
+      <p class="slide-desc animate-in delay-2">Eliminate at least one Coffman condition to prevent gridlock entirely</p>
+      <div class="prevention-layout">
+        <div class="prevention-card animate-in delay-2">
+          <div class="prev-icon">🟡</div>
+          <h3>Yellow Box Junction Rule</h3>
+          <p>"Do NOT enter the intersection unless your exit is clear"</p>
+          <div class="prev-tag">Breaks: Hold & Wait</div>
+          <div class="prev-visual">
+            <div class="yellow-box">
+              <div class="yb-label">KEEP CLEAR</div>
+            </div>
+          </div>
+        </div>
+        <div class="prevention-card animate-in delay-3">
+          <div class="prev-icon">↩️</div>
+          <h3>One-Way Road Systems</h3>
+          <p>Vehicles flow in a single direction — circular wait becomes impossible</p>
+          <div class="prev-tag">Breaks: Circular Wait</div>
+          <div class="oneway-visual">
+            <div class="ow-arrow">→ → → → →</div>
+            <div class="ow-label">ONE WAY</div>
+          </div>
+        </div>
+        <div class="prevention-card animate-in delay-4">
+          <div class="prev-icon">📋</div>
+          <h3>Pre-Allocated Routes</h3>
+          <p>Vehicles must declare full route before entering — resources allocated upfront</p>
+          <div class="prev-tag">Breaks: Hold & Wait</div>
+        </div>
+        <div class="prevention-card animate-in delay-5">
+          <div class="prev-icon">🔢</div>
+          <h3>Priority Ordering</h3>
+          <p>Vehicles assigned priority numbers — lower priority yields to higher</p>
+          <div class="prev-tag">Breaks: Circular Wait</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Avoidance Mechanisms -->
+  <div class="slide" id="slide-6">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">06</span>
+        <h2>Traffic <span class="highlight">Avoidance Mechanisms</span></h2>
+      </div>
+      <p class="slide-desc animate-in delay-2">Dynamic systems that monitor and steer traffic away from gridlock states</p>
+      <div class="avoidance-grid">
+        <div class="avoid-card animate-in delay-2">
+          <div class="avoid-header">
+            <span class="avoid-icon">🚦</span>
+            <span class="avoid-title">Smart Traffic Signals</span>
+          </div>
+          <p>Adaptive signals use real-time sensor data (Banker's Algorithm equivalent) to grant green only when safe passage is guaranteed</p>
+          <div class="algo-tag">≡ Banker's Algorithm</div>
+          <div class="signal-demo">
+            <div class="sig red" id="sig1"></div>
+            <div class="sig yellow" id="sig2"></div>
+            <div class="sig green" id="sig3"></div>
+          </div>
+        </div>
+        <div class="avoid-card animate-in delay-3">
+          <div class="avoid-header">
+            <span class="avoid-icon">🔵</span>
+            <span class="avoid-title">Roundabouts</span>
+          </div>
+          <p>Vehicles enter only when the roundabout has capacity — no direct conflict points, continuous flow maintained</p>
+          <div class="algo-tag">≡ Resource Ordering</div>
+          <div class="roundabout-visual">
+            <div class="roundabout-ring">
+              <div class="rb-car rb-car1">🚗</div>
+              <div class="rb-car rb-car2">🚙</div>
+              <div class="rb-car rb-car3">🚕</div>
+            </div>
+          </div>
+        </div>
+        <div class="avoid-card animate-in delay-4">
+          <div class="avoid-header">
+            <span class="avoid-icon">🛣️</span>
+            <span class="avoid-title">Dynamic Lane Allocation</span>
+          </div>
+          <p>Lanes are reassigned in real-time based on traffic density — prevents resource starvation in any direction</p>
+          <div class="algo-tag">≡ Dynamic Resource Allocation</div>
+          <div class="lane-visual">
+            <div class="lane-row">
+              <span class="lane-label">High</span>
+              <div class="lane-track"><div class="lane-fill" style="width:85%; background:#22c55e;"></div></div>
+            </div>
+            <div class="lane-row">
+              <span class="lane-label">Med</span>
+              <div class="lane-track"><div class="lane-fill" style="width:50%; background:#f59e0b;"></div></div>
+            </div>
+            <div class="lane-row">
+              <span class="lane-label">Low</span>
+              <div class="lane-track"><div class="lane-fill" style="width:25%; background:#ef4444;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Recovery Strategies -->
+  <div class="slide" id="slide-7">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">07</span>
+        <h2>Gridlock <span class="highlight">Recovery Strategies</span></h2>
+      </div>
+      <p class="slide-desc animate-in delay-2">When gridlock has already occurred — steps to detect and resolve it</p>
+      <div class="recovery-timeline">
+        <div class="timeline-step animate-in delay-2">
+          <div class="step-circle">1</div>
+          <div class="step-content">
+            <h4>🔍 Detection</h4>
+            <p>Traffic cameras & sensors identify the circular wait pattern — all lanes blocked, zero movement detected</p>
+            <div class="step-tag">≡ Deadlock Detection Algorithm</div>
+          </div>
+        </div>
+        <div class="timeline-connector animate-in delay-3"></div>
+        <div class="timeline-step animate-in delay-3">
+          <div class="step-circle">2</div>
+          <div class="step-content">
+            <h4>👮 Manual Intervention</h4>
+            <p>Traffic police physically direct one vehicle to reverse or yield — breaking the circular chain</p>
+            <div class="step-tag">≡ Process Preemption</div>
+          </div>
+        </div>
+        <div class="timeline-connector animate-in delay-4"></div>
+        <div class="timeline-step animate-in delay-4">
+          <div class="step-circle">3</div>
+          <div class="step-content">
+            <h4>🛤️ Lane Clearing</h4>
+            <p>One vehicle is selected (lowest priority) and asked to back up, freeing the critical resource</p>
+            <div class="step-tag">≡ Victim Selection & Rollback</div>
+          </div>
+        </div>
+        <div class="timeline-connector animate-in delay-5"></div>
+        <div class="timeline-step animate-in delay-5">
+          <div class="step-circle">4</div>
+          <div class="step-content">
+            <h4>🔀 Temporary Rerouting</h4>
+            <p>Alternate routes activated via GPS/signals — traffic redistributed to prevent re-gridlock</p>
+            <div class="step-tag">≡ Starvation Prevention</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Case Study Comparison -->
+  <div class="slide" id="slide-8">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">08</span>
+        <h2>Case Study <span class="highlight">Comparison</span></h2>
+      </div>
+      <p class="slide-desc animate-in delay-2">Three intersection types — same traffic load, different outcomes</p>
+      <div class="comparison-table animate-in delay-3">
+        <div class="comp-header">
+          <div class="comp-cell header-cell">Metric</div>
+          <div class="comp-cell header-cell bad">❌ Uncontrolled</div>
+          <div class="comp-cell header-cell medium">🚦 Signal-Controlled</div>
+          <div class="comp-cell header-cell good">🔵 Roundabout</div>
+        </div>
+        <div class="comp-row animate-in delay-3">
+          <div class="comp-cell metric-cell">Gridlock Risk</div>
+          <div class="comp-cell bad">Very High</div>
+          <div class="comp-cell medium">Low</div>
+          <div class="comp-cell good">Very Low</div>
+        </div>
+        <div class="comp-row animate-in delay-4">
+          <div class="comp-cell metric-cell">Throughput</div>
+          <div class="comp-cell bad">Poor</div>
+          <div class="comp-cell medium">Moderate</div>
+          <div class="comp-cell good">High</div>
+        </div>
+        <div class="comp-row animate-in delay-5">
+          <div class="comp-cell metric-cell">Recovery Time</div>
+          <div class="comp-cell bad">Very Long</div>
+          <div class="comp-cell medium">Short</div>
+          <div class="comp-cell good">Minimal</div>
+        </div>
+        <div class="comp-row animate-in delay-6">
+          <div class="comp-cell metric-cell">OS Equivalent</div>
+          <div class="comp-cell bad">No OS Scheduler</div>
+          <div class="comp-cell medium">Banker's Algorithm</div>
+          <div class="comp-cell good">Resource Ordering</div>
+        </div>
+        <div class="comp-row animate-in delay-7">
+          <div class="comp-cell metric-cell">Starvation Risk</div>
+          <div class="comp-cell bad">High</div>
+          <div class="comp-cell medium">Medium</div>
+          <div class="comp-cell good">Low</div>
+        </div>
+      </div>
+      <div class="comp-verdict animate-in delay-8">
+        <span>🏆 Verdict:</span> Roundabouts provide the most deadlock-free traffic flow — analogous to resource ordering in OS
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Proposed Traffic Flow Model -->
+  <div class="slide" id="slide-9">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">09</span>
+        <h2>Proposed Traffic <span class="highlight">Flow Model</span></h2>
+      </div>
+      <p class="slide-desc animate-in delay-2">An optimized routing plan combining prevention + avoidance + recovery</p>
+      <div class="flow-model-container animate-in delay-3">
+        <canvas id="flowCanvas" width="900" height="340"></canvas>
+      </div>
+      <div class="model-legend animate-in delay-4">
+        <div class="legend-item"><span class="leg-dot green"></span>Safe State — proceed</div>
+        <div class="legend-item"><span class="leg-dot yellow"></span>Caution — check exit</div>
+        <div class="legend-item"><span class="leg-dot red"></span>Blocked — reroute</div>
+        <div class="legend-item"><span class="leg-dot blue"></span>Recovery — intervene</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: Conclusion -->
+  <div class="slide" id="slide-10">
+    <div class="slide-bg bg-dark"></div>
+    <div class="slide-content">
+      <div class="slide-header animate-in delay-1">
+        <span class="slide-num">10</span>
+        <h2>Conclusion & <span class="highlight">References</span></h2>
+      </div>
+      <div class="conclusion-grid">
+        <div class="conclusion-card animate-in delay-2">
+          <div class="conc-icon">🎯</div>
+          <h4>Key Takeaway</h4>
+          <p>Traffic gridlocks are a perfect real-world model of OS deadlocks — same four conditions, same solutions</p>
+        </div>
+        <div class="conclusion-card animate-in delay-3">
+          <div class="conc-icon">🛡️</div>
+          <h4>Prevention First</h4>
+          <p>Yellow box rules & one-way systems eliminate deadlock conditions before they form</p>
+        </div>
+        <div class="conclusion-card animate-in delay-4">
+          <div class="conc-icon">🧠</div>
+          <h4>Smart Avoidance</h4>
+          <p>Adaptive signals mirror Banker's Algorithm — only grant access when safe state is guaranteed</p>
+        </div>
+        <div class="conclusion-card animate-in delay-5">
+          <div class="conc-icon">🔧</div>
+          <h4>Recovery Works</h4>
+          <p>Preemption via traffic police = OS process rollback. Victim selection breaks the circular chain</p>
+        </div>
+      </div>
+      <div class="references animate-in delay-6">
+        <div class="ref-title">References</div>
+        <div class="ref-list">
+          <div class="ref-item">📘 Silberschatz, Galvin & Gagne — <em>Operating System Concepts</em>, 10th Ed.</div>
+          <div class="ref-item">📗 Tanenbaum — <em>Modern Operating Systems</em>, 4th Ed.</div>
+          <div class="ref-item">📙 UK Dept. of Transport — <em>Yellow Box Junction Guidelines</em></div>
+          <div class="ref-item">📕 IEEE — <em>Adaptive Traffic Signal Control Systems</em>, 2022</div>
+        </div>
+      </div>
+      <div class="final-footer animate-in delay-7">
+        BACSE106 · Operating Systems · VIT Chennai · Group 3 · 2025–26
+      </div>
+    </div>
+  </div>
+
+</div><!-- end slides-wrapper -->
+
+<script src="script.js"></script>
+</body>
+</html>
